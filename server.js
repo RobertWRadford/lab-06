@@ -26,20 +26,7 @@ app.use(cors());
 
 // simple server route to give us our "homepage"
 app.get('/', (request, response) => {
-  response.send('my homepage');
-});
-
-// don't focus too much on this -> just want to show you how we produce ERRORs
-app.get('/unauthorized', (request, response) => {
-  throw new Error('not authorized to access this route');
-});
-
-// simple/example API route
-// our missing link is the location of our actual data -> ie: file or a database
-// that contains the weather and the location
-app.get('/test/route', (request, response) => {
-  // see an API as a way to interface with data that can be used to power other applications/services
-  response.json({ location: 'seattle', temp: '58 deg' });
+  response.send('Home Page');
 });
 
 // http://localhost:3000/location?city=seattle
@@ -59,6 +46,29 @@ function handleLocation(request, response) {
     const city = request.query.city; // "seattle" -> localhost:3000/location?city=seattle
     const locationData = new Location(city, geoData);
     response.json(locationData);
+  } catch {
+    // otherwise, if an error is handed off, handle it here
+    response.status(500).send('sorry, something broke.');
+  }
+}
+
+app.get('/weather', handleWeather);
+
+function Weather(description, datetime) {
+  this.forecast = description;
+  this.time = datetime;
+}
+
+function handleWeather(request, response) {
+  try {
+    // try to "resolve" the following (no errors)
+    const weatherData = require('./data/weather.json');
+    weatherData.forEach(time => {
+      const descript = time.weather.description;
+      const date = time.datetime;
+      const weatherFore = new Weather(descript, date);
+      response.json(weatherFore);
+    });
   } catch {
     // otherwise, if an error is handed off, handle it here
     response.status(500).send('sorry, something broke.');
