@@ -62,25 +62,27 @@ function Weather(description, datetime) {
 function handleWeather(request, response) {
   try {
     // try to "resolve" the following (no errors)
+    let weatherArr = [];
     const weatherData = require('./data/weather.json');
-    weatherData.forEach(time => {
+    weatherData.data.forEach(time => {
       const descript = time.weather.description;
       const date = time.datetime;
       const weatherFore = new Weather(descript, date);
-      response.json(weatherFore);
+      weatherArr.push(weatherFore);
     });
+    response.send(weatherArr);
   } catch {
     // otherwise, if an error is handed off, handle it here
     response.status(500).send('sorry, something broke.');
   }
 }
 
-app.get('*', (request, response) => {
-  // status -> did this work, where are we at in the process of delivering data
-  // 404 -> "not found" status code
-  // statuses live on the request and the response body
-  response.status(404).send('not found');
-});
+// app.get('*', (request, response) => {
+//   // status -> did this work, where are we at in the process of delivering data
+//   // 404 -> "not found" status code
+//   // statuses live on the request and the response body
+//   response.status(404).send('not found');
+// });
 
 // configure our app to accept and listen for incoming traffic
 app.listen(PORT, () => {
