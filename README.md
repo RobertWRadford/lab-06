@@ -66,6 +66,50 @@ Finish time: 5:20pm
 
 Actual time needed to complete: 20 minutes
 
+### Feature 5
+Number and name of feature: Data formatting
+
+Estimate of time needed to complete: 15 minutes
+
+Start time: 3:50pm
+
+Finish time: _____
+
+Actual time needed to complete: _____
+
+### Feature
+Number and name of feature: ________________________________
+
+Estimate of time needed to complete: _____
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____
+
+### Feature
+Number and name of feature: ________________________________
+
+Estimate of time needed to complete: _____
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____
+
+### Feature
+Number and name of feature: ________________________________
+
+Estimate of time needed to complete: _____
+
+Start time: _____
+
+Finish time: _____
+
+Actual time needed to complete: _____
+
 ### Feature
 Number and name of feature: ________________________________
 
