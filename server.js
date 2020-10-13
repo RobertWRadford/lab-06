@@ -26,7 +26,7 @@ app.use(cors());
 
 
 //catch errors and send here
-function caughtError() {
+function caughtError(request, response) {
   response.status(500).send('sorry, something broke.');
 }
 
@@ -54,7 +54,7 @@ function handleLocation(request, response) {
     response.json(locationData);
   } catch {
     // otherwise, if an error is handed off, handle it here
-    caughtError();
+    caughtError(request, response);
   }
 }
 
@@ -79,18 +79,12 @@ function handleWeather(request, response) {
     response.send(weatherArr);
   } catch {
     // otherwise, if an error is handed off, handle it here
-    caughtError();
+    caughtError(request, response);
   }
 }
 
-caughtError();
 
-// app.get('*', (request, response) => {
-//   // status -> did this work, where are we at in the process of delivering data
-//   // 404 -> "not found" status code
-//   // statuses live on the request and the response body
-//   response.status(404).send('not found');
-// });
+app.get('*', caughtError);
 
 // configure our app to accept and listen for incoming traffic
 app.listen(PORT, () => {
