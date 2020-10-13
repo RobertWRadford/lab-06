@@ -11,6 +11,7 @@ require('dotenv').config();
 // requiring "pulling in" off the 3rd party dependencies we want to use
 // ie: express -> for building APIs and related services (backend for web apps)
 const express = require('express');
+const superagent = require('superagent');
 const cors = require('cors');
 
 // assign express to "app" -> why? -> because everyone does that
@@ -20,6 +21,7 @@ const app = express();
 // devs often default their dev port to 3000, 3001, or 3333 for backends
 // and often default 8000 or 8080 for frontends
 const PORT = process.env.PORT;
+const GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
 
 // just "use" this -> it will allow for a public server
 app.use(cors());
@@ -46,16 +48,19 @@ function Location(city, geoData) {
 }
 
 function handleLocation(request, response) {
-  try {
-    // try to "resolve" the following (no errors)
-    const geoData = require('./data/location.json');
-    const city = request.query.city; // "seattle" -> localhost:3000/location?city=seattle
-    const locationData = new Location(city, geoData);
-    response.json(locationData);
-  } catch {
-    // otherwise, if an error is handed off, handle it here
-    caughtError(request, response);
-  }
+  
+  const citySearched = request.query.city;
+  const url = `https://us1.locationiq.com/v1/search.php?key=${GEOCODE_API_KEY}&q=${citySearched}&format=json`;
+
+  superagent.get(url)
+    .then((data) => {
+      const results = data.body;
+      let newLocation = new Location(citySearched, results);
+      response.send(newLocation);
+    })
+    .catch(() => {
+      caughtError(request, response);
+    });
 }
 
 app.get('/weather', handleWeather);

@@ -73,16 +73,16 @@ Estimate of time needed to complete: 15 minutes
 
 Start time: 3:50pm
 
-Finish time: _____
+Finish time: 3:55pm
 
-Actual time needed to complete: _____
+Actual time needed to complete: 5 minutes
 
-### Feature
-Number and name of feature: ________________________________
+### Feature 6
+Number and name of feature: Locations
 
-Estimate of time needed to complete: _____
+Estimate of time needed to complete: one hour
 
-Start time: _____
+Start time: 4:00 pm
 
 Finish time: _____
 
