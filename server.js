@@ -24,6 +24,12 @@ const PORT = process.env.PORT;
 // just "use" this -> it will allow for a public server
 app.use(cors());
 
+
+//catch errors and send here
+function caughtError(request, response) {
+  response.status(500).send('sorry, something broke.');
+}
+
 // simple server route to give us our "homepage"
 app.get('/', (request, response) => {
   response.send('Home Page');
@@ -48,7 +54,7 @@ function handleLocation(request, response) {
     response.json(locationData);
   } catch {
     // otherwise, if an error is handed off, handle it here
-    response.status(500).send('sorry, something broke.');
+    caughtError(request, response);
   }
 }
 
@@ -73,16 +79,12 @@ function handleWeather(request, response) {
     response.send(weatherArr);
   } catch {
     // otherwise, if an error is handed off, handle it here
-    response.status(500).send('sorry, something broke.');
+    caughtError(request, response);
   }
 }
 
-// app.get('*', (request, response) => {
-//   // status -> did this work, where are we at in the process of delivering data
-//   // 404 -> "not found" status code
-//   // statuses live on the request and the response body
-//   response.status(404).send('not found');
-// });
+
+app.get('*', caughtError);
 
 // configure our app to accept and listen for incoming traffic
 app.listen(PORT, () => {
