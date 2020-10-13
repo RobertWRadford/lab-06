@@ -65,23 +65,102 @@ function Weather(description, datetime) {
   this.time = datetime;
 }
 
+function mapWeather(time){
+  const descript = time.weather.description;
+  const date = time.datetime;
+  const weatherFore = new Weather(descript, date);
+  return weatherFore;
+}
+
 function handleWeather(request, response) {
   try {
     // try to "resolve" the following (no errors)
-    let weatherArr = [];
     const weatherData = require('./data/weather.json');
-    weatherData.data.forEach(time => {
-      const descript = time.weather.description;
-      const date = time.datetime;
-      const weatherFore = new Weather(descript, date);
-      weatherArr.push(weatherFore);
-    });
+    let weatherArr = weatherData.data.map(mapWeather);
     response.send(weatherArr);
   } catch {
     // otherwise, if an error is handed off, handle it here
     caughtError(request, response);
   }
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+app.get('/restaurant', handleRestaurant);
+
+function handleRestaurant(request, response) {
+
+  const url = 'https://developers.zomato.com/api/v2.1/geocode';
+  const queryParams = {
+    lat: request.query.latitude,
+    lng: request.query.longitude,
+  };
+
+  superagent.get(url)
+    .set('user-key', process.env.ZOMATO_API_KEY)
+    .query(queryParams)
+    .then((data) => {
+      const results = data.body;
+      const restaurantData = [];
+      results.nearby_restaurants.forEach(entry => {
+        restaurantData.push(new Restaurant(entry));
+      });
+      response.send(restaurantData);
+    })
+    .catch(() => {
+      console.log('ERROR', error);
+      response.status(500).send('So sorry, something went wrong.');
+    });
+
+}
+
+function Restaurant(entry) {
+  this.restaurant = entry.restaurant.name;
+  this.cuisines = entry.restaurant.cuisines;
+  this.locality = entry.restaurant.location.locality;
+}
+
+app.get('/places', handlePlaces);
+
+function handlePlaces(request, response) {
+
+  const lat = request.query.latitude;
+  const lng = request.query.longitude;
+  const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json`;
+
+  const queryParams = {
+    access_token: process.env.MAPBOX_API_KEY,
+    types: 'poi',
+    limit: 10,
+  };
+
+  superagent.get(url)
+    .query(queryParams)
+    .then((data) => {
+      const results = data.body;
+      const places = [];
+      results.features.forEach(entry => {
+        places.push(new Place(entry));
+      });
+      response.send(places);
+    })
+    .catch((error) => {
+      console.log('ERROR', error);
+      response.status(500).send('So sorry, something went wrong.');
+    });
+}
+
+function Place(data) {
+  this.name = data.text;
+  this.type = data.properties.category;
+  this.address = data.place_name;
+}
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 app.get('*', caughtError);
