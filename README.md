@@ -44,7 +44,6 @@ Actual time needed to complete: 15 minutes
 
 Comment: I used the demo as a launch point and this was essentially already built
 
-
 ### Feature 3
 Number and name of feature: Weather
 
@@ -67,7 +66,7 @@ Finish time: 5:20pm
 
 Actual time needed to complete: 20 minutes
 
-### Feature 
+### Feature
 Number and name of feature: ________________________________
 
 Estimate of time needed to complete: _____
