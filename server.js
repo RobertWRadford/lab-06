@@ -83,6 +83,8 @@ function handleWeather(request, response) {
   }
 }
 
+caughtError();
+
 // app.get('*', (request, response) => {
 //   // status -> did this work, where are we at in the process of delivering data
 //   // 404 -> "not found" status code
