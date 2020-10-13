@@ -32,16 +32,16 @@ Estimate of time needed to complete: 30 minutes
 
 Start time: 4:30pm
 
-Finish time: _____
+Finish time: 5:00pm
 
-Actual time needed to complete: _____
+Actual time needed to complete: 30 minutes
 
 ## Feature 4
-Number and name of feature: ________________________________
+Number and name of feature: Errors
 
-Estimate of time needed to complete: _____
+Estimate of time needed to complete: 25 minutes
 
-Start time: _____
+Start time: 5:00pm
 
 Finish time: _____
 
