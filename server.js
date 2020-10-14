@@ -80,8 +80,8 @@ function mapWeather(time){
 
 function handleWeather(request, response) {
   
-  const latSearched = request.query.lat;
-  const lonSearched = request.query.lon;
+  const latSearched = request.query.latitude;
+  const lonSearched = request.query.longitude;
   const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHER_API_KEY}&lat=${latSearched}&lon=${lonSearched}&days=8&format=JSON`;
 
 
