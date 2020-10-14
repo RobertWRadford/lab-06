@@ -51,10 +51,12 @@ function handleLocation(request, response) {
   
   const citySearched = request.query.city;
   const url = `https://us1.locationiq.com/v1/search.php?key=${GEOCODE_API_KEY}&q=${citySearched}&format=json`;
+  console.log(url);
 
   superagent.get(url)
     .then((data) => {
       const results = data.body;
+      console.log(results);
       let newLocation = new Location(citySearched, results);
       response.send(newLocation);
     })
