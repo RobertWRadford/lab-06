@@ -82,18 +82,18 @@ Number and name of feature: Locations
 
 Estimate of time needed to complete: one hour
 
-Start time: 4:00 pm
+Start time: 4:00pm
 
-Finish time: _____
+Finish time: 5:15pm
 
-Actual time needed to complete: _____
+Actual time needed to complete: one hour 15 minutes
 
-### Feature
-Number and name of feature: ________________________________
+### Feature 7
+Number and name of feature: Weather
 
-Estimate of time needed to complete: _____
+Estimate of time needed to complete: 45 minutes
 
-Start time: _____
+Start time: 5:20pm
 
 Finish time: _____
 
