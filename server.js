@@ -101,12 +101,13 @@ function handleWeather(request, response) {
 app.get('/trails', handleTrails);
 
 function Trails(obj) {
+  let conditionDates = obj.conditionDate.split(' ');
   this.trail_url = obj.url;
   this.name = obj.name;
   this.location = obj.location;
   this.length = obj.length;
-  this.condition_date = obj.conditionDate.split(' ').[0];
-  this.condition_time = obj.conditionDate.split(' ').[1];
+  this.condition_date = conditionDates[0];
+  this.condition_time = conditionDates[1];
   this.conditions = obj.conditionStatus;
   this.stars = obj.stars;
   this.star_votes = obj.starVotes;
