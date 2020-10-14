@@ -100,7 +100,7 @@ function handleWeather(request, response) {
 
 app.get('/trails', handleTrails);
 
-function Trails(obj) {
+function Trail(obj) {
   let conditionDates = obj.conditionDate.split(' ');
   this.trail_url = obj.url;
   this.name = obj.name;
@@ -114,6 +114,10 @@ function Trails(obj) {
   this.summary = obj.summary;
 }
 
+function mapTrails(obj){
+  return new Trail(obj);
+}
+
 function handleTrails(request, response) {
   
   const latSearched = request.query.latitude;
@@ -123,10 +127,8 @@ function handleTrails(request, response) {
   superagent.get(url)
     .then((data) => {
       const results = data.body;
-      results.trails.forEach(obj => {
-        let localTrail = new Trail(obj);
-        response.send(localTrail);
-      });
+      let localTrails = results.trails.map(mapTrails);
+      response.send(localTrails);
     })
     .catch(() => {
       caughtError(request, response);
