@@ -118,7 +118,7 @@ function handleTrails(request, response) {
   
   const latSearched = request.query.latitude;
   const lonSearched = request.query.longitude;
-  const url = `https://www.hikingproject.com/data/get-trails?key=${TRAILS_API_KEY}&lat=${latSearched}&lon=${lonSearched}&format=JSON`;
+  const url = `https://www.hikingproject.com/data/get-trails?key=${TRAIL_API_KEY}&lat=${latSearched}&lon=${lonSearched}&format=JSON`;
 
   superagent.get(url)
     .then((data) => {
