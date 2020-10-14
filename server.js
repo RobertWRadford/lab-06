@@ -82,7 +82,7 @@ function handleWeather(request, response) {
   
   const latSearched = request.query.lat;
   const lonSearched = request.query.lon;
-  const url = `https://api.weatherbit.io/v2.0/current?key=${WEATHER_API_KEY}&lat=${latSearched}&lon=${lonSearched}&format=JSON`;
+  const url = `https://api.weatherbit.io/v2.0/history/daily?key=${WEATHER_API_KEY}&lat=${latSearched}&lon=${lonSearched}&format=JSON`;
 
 
   superagent.get(url)
