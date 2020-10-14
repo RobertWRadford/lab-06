@@ -106,9 +106,9 @@ Estimate of time needed to complete: 45 minutes
 
 Start time: 6:00pm
 
-Finish time: _____
+Finish time: 7:00pm
 
-Actual time needed to complete: _____
+Actual time needed to complete: one hour
 
 ### Feature
 Number and name of feature: ________________________________
