@@ -73,42 +73,42 @@ Estimate of time needed to complete: 15 minutes
 
 Start time: 3:50pm
 
-Finish time: _____
+Finish time: 3:55pm
 
-Actual time needed to complete: _____
+Actual time needed to complete: 5 minutes
 
-### Feature
-Number and name of feature: ________________________________
+### Feature 6
+Number and name of feature: Locations
 
-Estimate of time needed to complete: _____
+Estimate of time needed to complete: one hour
 
-Start time: _____
+Start time: 4:00pm
 
-Finish time: _____
+Finish time: 5:15pm
 
-Actual time needed to complete: _____
+Actual time needed to complete: one hour 15 minutes
 
-### Feature
-Number and name of feature: ________________________________
+### Feature 7
+Number and name of feature: Weather
 
-Estimate of time needed to complete: _____
+Estimate of time needed to complete: 45 minutes
 
-Start time: _____
+Start time: 5:20pm
 
-Finish time: _____
+Finish time: 6:00pm
 
-Actual time needed to complete: _____
+Actual time needed to complete: 40 minutes
 
-### Feature
-Number and name of feature: ________________________________
+### Feature 8
+Number and name of feature: Trails
 
-Estimate of time needed to complete: _____
+Estimate of time needed to complete: 45 minutes
 
-Start time: _____
+Start time: 6:00pm
 
-Finish time: _____
+Finish time: 7:00pm
 
-Actual time needed to complete: _____
+Actual time needed to complete: one hour
 
 ### Feature
 Number and name of feature: ________________________________

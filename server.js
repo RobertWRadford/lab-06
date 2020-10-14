@@ -11,6 +11,7 @@ require('dotenv').config();
 // requiring "pulling in" off the 3rd party dependencies we want to use
 // ie: express -> for building APIs and related services (backend for web apps)
 const express = require('express');
+const superagent = require('superagent');
 const cors = require('cors');
 
 // assign express to "app" -> why? -> because everyone does that
@@ -20,6 +21,9 @@ const app = express();
 // devs often default their dev port to 3000, 3001, or 3333 for backends
 // and often default 8000 or 8080 for frontends
 const PORT = process.env.PORT;
+const GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
+const TRAIL_API_KEY = process.env.TRAIL_API_KEY;
 
 // just "use" this -> it will allow for a public server
 app.use(cors());
@@ -46,16 +50,19 @@ function Location(city, geoData) {
 }
 
 function handleLocation(request, response) {
-  try {
-    // try to "resolve" the following (no errors)
-    const geoData = require('./data/location.json');
-    const city = request.query.city; // "seattle" -> localhost:3000/location?city=seattle
-    const locationData = new Location(city, geoData);
-    response.json(locationData);
-  } catch {
-    // otherwise, if an error is handed off, handle it here
-    caughtError(request, response);
-  }
+  
+  const citySearched = request.query.city;
+  const url = `https://us1.locationiq.com/v1/search.php?key=${GEOCODE_API_KEY}&q=${citySearched}&format=json`;
+
+  superagent.get(url)
+    .then((data) => {
+      const results = data.body;
+      let newLocation = new Location(citySearched, results);
+      response.send(newLocation);
+    })
+    .catch(() => {
+      caughtError(request, response);
+    });
 }
 
 app.get('/weather', handleWeather);
@@ -73,95 +80,60 @@ function mapWeather(time){
 }
 
 function handleWeather(request, response) {
-  try {
-    // try to "resolve" the following (no errors)
-    const weatherData = require('./data/weather.json');
-    let weatherArr = weatherData.data.map(mapWeather);
-    response.send(weatherArr);
-  } catch {
-    // otherwise, if an error is handed off, handle it here
-    caughtError(request, response);
-  }
-}
+  
+  const latSearched = request.query.latitude;
+  const lonSearched = request.query.longitude;
+  const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHER_API_KEY}&lat=${latSearched}&lon=${lonSearched}&format=JSON`;
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-app.get('/restaurant', handleRestaurant);
-
-function handleRestaurant(request, response) {
-
-  const url = 'https://developers.zomato.com/api/v2.1/geocode';
-  const queryParams = {
-    lat: request.query.latitude,
-    lng: request.query.longitude,
-  };
 
   superagent.get(url)
-    .set('user-key', process.env.ZOMATO_API_KEY)
-    .query(queryParams)
     .then((data) => {
       const results = data.body;
-      const restaurantData = [];
-      results.nearby_restaurants.forEach(entry => {
-        restaurantData.push(new Restaurant(entry));
-      });
-      response.send(restaurantData);
+      let weatherArr = results.data.map(mapWeather);
+      console.log(weatherArr);
+      response.send(weatherArr);
     })
     .catch(() => {
-      console.log('ERROR', error);
-      response.status(500).send('So sorry, something went wrong.');
+      caughtError(request, response);
     });
-
 }
 
-function Restaurant(entry) {
-  this.restaurant = entry.restaurant.name;
-  this.cuisines = entry.restaurant.cuisines;
-  this.locality = entry.restaurant.location.locality;
+app.get('/trails', handleTrails);
+
+function Trail(obj) {
+  let conditionDates = obj.conditionDate.split(' ');
+  this.trail_url = obj.url;
+  this.name = obj.name;
+  this.location = obj.location;
+  this.length = obj.length;
+  this.condition_date = conditionDates[0];
+  this.condition_time = conditionDates[1];
+  this.conditions = obj.conditionStatus;
+  this.stars = obj.stars;
+  this.star_votes = obj.starVotes;
+  this.summary = obj.summary;
 }
 
-app.get('/places', handlePlaces);
+function mapTrails(obj){
+  return new Trail(obj);
+}
 
-function handlePlaces(request, response) {
-
-  const lat = request.query.latitude;
-  const lng = request.query.longitude;
-  const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json`;
-
-  const queryParams = {
-    access_token: process.env.MAPBOX_API_KEY,
-    types: 'poi',
-    limit: 10,
-  };
+function handleTrails(request, response) {
+  
+  const latSearched = request.query.latitude;
+  const lonSearched = request.query.longitude;
+  const url = `https://www.hikingproject.com/data/get-trails?key=${TRAIL_API_KEY}&lat=${latSearched}&lon=${lonSearched}&format=JSON`;
 
   superagent.get(url)
-    .query(queryParams)
     .then((data) => {
       const results = data.body;
-      const places = [];
-      results.features.forEach(entry => {
-        places.push(new Place(entry));
-      });
-      response.send(places);
+      let localTrails = results.trails.map(mapTrails);
+      response.send(localTrails);
     })
-    .catch((error) => {
-      console.log('ERROR', error);
-      response.status(500).send('So sorry, something went wrong.');
+    .catch(() => {
+      caughtError(request, response);
     });
 }
-
-function Place(data) {
-  this.name = data.text;
-  this.type = data.properties.category;
-  this.address = data.place_name;
-}
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 app.get('*', caughtError);
 
