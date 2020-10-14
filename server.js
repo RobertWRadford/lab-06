@@ -23,6 +23,7 @@ const app = express();
 const PORT = process.env.PORT;
 const GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
+const TRAIL_API_KEY = process.env.TRAIL_API_KEY;
 
 // just "use" this -> it will allow for a public server
 app.use(cors());
@@ -82,7 +83,7 @@ function handleWeather(request, response) {
   
   const latSearched = request.query.latitude;
   const lonSearched = request.query.longitude;
-  const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHER_API_KEY}&lat=${latSearched}&lon=${lonSearched}&days=8&format=JSON`;
+  const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHER_API_KEY}&lat=${latSearched}&lon=${lonSearched}&format=JSON`;
 
 
   superagent.get(url)
@@ -91,6 +92,40 @@ function handleWeather(request, response) {
       let weatherArr = results.data.map(mapWeather);
       console.log(weatherArr);
       response.send(weatherArr);
+    })
+    .catch(() => {
+      caughtError(request, response);
+    });
+}
+
+app.get('/trails', handleTrails);
+
+function Trails(obj) {
+  this.trail_url = obj.url;
+  this.name = obj.name;
+  this.location = obj.location;
+  this.length = obj.length;
+  this.condition_date = obj.conditionDate.split(' ').[0];
+  this.condition_time = obj.conditionDate.split(' ').[1];
+  this.conditions = obj.conditionStatus;
+  this.stars = obj.stars;
+  this.star_votes = obj.starVotes;
+  this.summary = obj.summary;
+}
+
+function handleTrails(request, response) {
+  
+  const latSearched = request.query.latitude;
+  const lonSearched = request.query.longitude;
+  const url = `https://www.hikingproject.com/data/get-trails?key=${TRAILS_API_KEY}&lat=${latSearched}&lon=${lonSearched}&format=JSON`;
+
+  superagent.get(url)
+    .then((data) => {
+      const results = data.body;
+      results.trails.forEach(obj => {
+        let localTrail = new Trail(obj);
+        response.send(localTrail);
+      });
     })
     .catch(() => {
       caughtError(request, response);
