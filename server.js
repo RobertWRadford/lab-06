@@ -13,6 +13,7 @@ require('dotenv').config();
 const express = require('express');
 const superagent = require('superagent');
 const cors = require('cors');
+const pg = require('pg');
 
 // assign express to "app" -> why? -> because everyone does that
 const app = express();
