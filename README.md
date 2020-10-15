@@ -110,6 +110,50 @@ Finish time: 7:00pm
 
 Actual time needed to complete: one hour
 
+### Feature 9
+Number and name of feature: Database
+
+Estimate of time needed to complete: one hour
+
+Start time: 5:30 pm
+
+Finish time: 6:15pm
+
+Actual time needed to complete: 45 minutes
+
+### Feature 10
+Number and name of feature: Server
+
+Estimate of time needed to complete: one hour
+
+Start time: 6:20pm
+
+Finish time: 8:50pm
+
+Actual time needed to complete: two and a half hours
+
+### Feature 11
+Number and name of feature: Deploy
+
+Estimate of time needed to complete: 5 minutes
+
+Start time: 9:05pm
+
+Finish time: 9:10pm
+
+Actual time needed to complete: 5 minutes
+
+### Feature 12
+Number and name of feature: Stretch
+
+Estimate of time needed to complete: ?
+
+Start time: ?
+
+Finish time: ?
+
+Actual time needed to complete: ?
+
 ### Feature
 Number and name of feature: ________________________________
 
