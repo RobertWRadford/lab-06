@@ -85,7 +85,6 @@ function handleWeather(request, response) {
   const lonSearched = request.query.longitude;
   const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHER_API_KEY}&lat=${latSearched}&lon=${lonSearched}&format=JSON`;
 
-
   superagent.get(url)
     .then((data) => {
       const results = data.body;
@@ -114,10 +113,6 @@ function Trail(obj) {
   this.summary = obj.summary;
 }
 
-function mapTrails(obj){
-  return new Trail(obj);
-}
-
 function handleTrails(request, response) {
   
   const latSearched = request.query.latitude;
@@ -127,7 +122,7 @@ function handleTrails(request, response) {
   superagent.get(url)
     .then((data) => {
       const results = data.body;
-      let localTrails = results.trails.map(mapTrails);
+      let localTrails = results.trails.map(obj => new Trail(obj));
       response.send(localTrails);
     })
     .catch(() => {
