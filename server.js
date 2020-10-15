@@ -25,6 +25,7 @@ const PORT = process.env.PORT;
 const GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 const TRAIL_API_KEY = process.env.TRAIL_API_KEY;
+const client = new pg.Client(process.env.DATABASE_URL);
 
 // just "use" this -> it will allow for a public server
 app.use(cors());
@@ -52,7 +53,20 @@ function Location(city, geoData) {
 
 function handleLocation(request, response) {
   
+  let SQL = 'SELECT * FROM locations where search_query=$1';
   const citySearched = request.query.city;
+  const values = [citySearched];
+
+  client.query(SQL, values)
+    .then(results => {
+      console.log(results);
+      // res.status(200).json(results);
+    })
+    .catch( err => {
+      console.error('db error:', err);
+    })
+
+  
   const url = `https://us1.locationiq.com/v1/search.php?key=${GEOCODE_API_KEY}&q=${citySearched}&format=json`;
 
   superagent.get(url)
@@ -139,6 +153,12 @@ function handleTrails(request, response) {
 app.get('*', caughtError);
 
 // configure our app to accept and listen for incoming traffic
-app.listen(PORT, () => {
-  console.log(`server up: ${PORT}`);
-});
+client.connect()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`server up: ${PORT}`);
+    });
+  })
+  .catch( err => {
+    console.error('connection error:', err);
+  })
