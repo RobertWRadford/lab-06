@@ -57,9 +57,32 @@ function handleLocation(request, response) {
   const citySearched = request.query.city;
   const values = [citySearched];
 
-  client.query(SQL, values)
+  return client.query(SQL, values)
     .then(results => {
-      console.log(results);
+      if (results.rows.length) {
+        
+        response.send(results.rows[0]);
+
+      } else {
+
+        const url = `https://us1.locationiq.com/v1/search.php?key=${GEOCODE_API_KEY}&q=${citySearched}&format=json`;
+        superagent.get(url)
+          .then((data) => {
+            const result = data.body;
+            let newLocation = new Location(citySearched, result);
+            let SQL2 = 'INSERT INTO locations (search_query, formatted_query, latitude, longitude) values($1, $2, $3, $4) RETURNING *';
+            let values2 = [newLocation.search_query, newLocation.formatted_query, newLocation.latitude, newLocation.longitude];
+            client.query(SQL2, values2)
+              .catch( err => {
+                console.error('db error:', err);
+              })
+            response.send(newLocation);
+          })
+          .catch(() => {
+            caughtError(request, response);
+          });
+
+      }
       // res.status(200).json(results);
     })
     .catch( err => {
@@ -67,17 +90,7 @@ function handleLocation(request, response) {
     })
 
   
-  const url = `https://us1.locationiq.com/v1/search.php?key=${GEOCODE_API_KEY}&q=${citySearched}&format=json`;
-
-  superagent.get(url)
-    .then((data) => {
-      const results = data.body;
-      let newLocation = new Location(citySearched, results);
-      response.send(newLocation);
-    })
-    .catch(() => {
-      caughtError(request, response);
-    });
+  
 }
 
 app.get('/weather', handleWeather);
@@ -105,7 +118,6 @@ function handleWeather(request, response) {
     .then((data) => {
       const results = data.body;
       let weatherArr = results.data.map(mapWeather);
-      console.log(weatherArr);
       response.send(weatherArr);
     })
     .catch(() => {
