@@ -88,9 +88,6 @@ function handleLocation(request, response) {
     .catch( err => {
       console.error('db error:', err);
     })
-
-  
-  
 }
 
 app.get('/weather', handleWeather);
@@ -112,7 +109,6 @@ function handleWeather(request, response) {
   const latSearched = request.query.latitude;
   const lonSearched = request.query.longitude;
   const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHER_API_KEY}&lat=${latSearched}&lon=${lonSearched}&format=JSON`;
-
 
   superagent.get(url)
     .then((data) => {
