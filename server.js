@@ -191,24 +191,25 @@ function handleMovies(request, response) {
 app.get('/yelp', handleYelp);
 
 function Yelp(obj) {
-  this.title = obj.title;
-  this.overview = obj.overview;
-  this.average_votes = obj.vote_average;
-  this.total_votes = obj.vote_count;
-  this.image_url = obj.backdrop_path;
-  this.popularity = obj.popularity;
-  this.released_on = obj.release_date;
+  this.name = obj.name;
+  this.image_url = obj.image_url;
+  this.url = obj.url;
+  this.rating = obj.rating;
+  this.price = obj.price;
 }
 
 function handleYelp(request, response) {
   
-  const url = `https://api.yelp.com/v3/businesses/search?api_key=${YELP_API_KEY}`;
+  const latSearched = request.query.latitude;
+  const lonSearched = request.query.longitude;
+  const url = `https://api.yelp.com/v3/businesses/search?latitude=${latSearched}&longitude=${lonSearched}`;
 
   superagent.get(url)
     .then((data) => {
+      res.setHeader('Authorization', `Bearer ${YELP_API_KEY}`);
       const results = data.body;
-      // let localMovies = results.movies.map(obj => new Movie(obj));
-      // response.send(localMovies);
+      let localBusinesses = results.businesses.map(obj => new Yelp(obj));
+      response.send(localBusinesses);
     })
     .catch(() => {
       caughtError(request, response);
