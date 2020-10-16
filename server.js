@@ -25,6 +25,8 @@ const PORT = process.env.PORT;
 const GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 const TRAIL_API_KEY = process.env.TRAIL_API_KEY;
+const MOVIE_API_KEY = process.env.MOVIE_API_KEY;
+const YELP_API_KEY = process.env.YELP_API_KEY;
 const client = new pg.Client(process.env.DATABASE_URL);
 
 // just "use" this -> it will allow for a public server
@@ -152,6 +154,61 @@ function handleTrails(request, response) {
       const results = data.body;
       let localTrails = results.trails.map(mapTrails);
       response.send(localTrails);
+    })
+    .catch(() => {
+      caughtError(request, response);
+    });
+}
+
+app.get('/movies', handleMovies);
+
+function Movie(obj) {
+  this.title = obj.title;
+  this.overview = obj.overview;
+  this.average_votes = obj.vote_average;
+  this.total_votes = obj.vote_count;
+  this.image_url = obj.backdrop_path;
+  this.popularity = obj.popularity;
+  this.released_on = obj.release_date;
+}
+
+function handleMovies(request, response) {
+  
+  const search_query = request.query.search_query;
+  const url = `https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_API_KEY}&query=${search_query}`;
+
+  superagent.get(url)
+    .then((data) => {
+      const results = data.body;
+      let localMovies = results.movies.map(obj => new Movie(obj));
+      response.send(localMovies);
+    })
+    .catch(() => {
+      caughtError(request, response);
+    });
+}
+
+app.get('/yelp', handleYelp);
+
+function Yelp(obj) {
+  this.title = obj.title;
+  this.overview = obj.overview;
+  this.average_votes = obj.vote_average;
+  this.total_votes = obj.vote_count;
+  this.image_url = obj.backdrop_path;
+  this.popularity = obj.popularity;
+  this.released_on = obj.release_date;
+}
+
+function handleYelp(request, response) {
+  
+  const url = `https://api.yelp.com/v3/businesses/search?api_key=${YELP_API_KEY}`;
+
+  superagent.get(url)
+    .then((data) => {
+      const results = data.body;
+      // let localMovies = results.movies.map(obj => new Movie(obj));
+      // response.send(localMovies);
     })
     .catch(() => {
       caughtError(request, response);
