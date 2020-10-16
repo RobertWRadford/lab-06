@@ -202,6 +202,8 @@ function handleYelp(request, response) {
   
   const latSearched = request.query.latitude;
   const lonSearched = request.query.longitude;
+  const curPage = request.query.page;
+  const itemsShown = 5;
   const url = `https://api.yelp.com/v3/businesses/search?latitude=${latSearched}&longitude=${lonSearched}`;
   
   superagent.get(url)
@@ -209,7 +211,9 @@ function handleYelp(request, response) {
     .then((data) => {
       const results = data.body;
       let localBusinesses = results.businesses.map(obj => new Yelp(obj));
-      response.send(localBusinesses);
+      let startShow = 0+itemsShown*(curPage-1);
+      let shownBusinesses = localBusinesses.splice(startShow, 5);
+      response.send(shownBusinesses);
     })
     .catch(() => {
       caughtError(request, response);
