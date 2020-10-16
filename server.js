@@ -174,13 +174,17 @@ function Movie(obj) {
 
 function handleMovies(request, response) {
   
-  const search_query = request.query.search_query;
-  const url = `https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_API_KEY}&query=${search_query}`;
+  console.log('entered movies');
+
+  const citySearched = request.query.city;
+  const url = `https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_API_KEY}&query=${citySearched}`;
+
+  console.log(url);
 
   superagent.get(url)
     .then((data) => {
-      const results = data.body;
-      let localMovies = results.movies.map(obj => new Movie(obj));
+      const result = data.body.results;
+      let localMovies = result.map(obj => new Movie(obj));
       response.send(localMovies);
     })
     .catch(() => {
@@ -203,10 +207,10 @@ function handleYelp(request, response) {
   const latSearched = request.query.latitude;
   const lonSearched = request.query.longitude;
   const url = `https://api.yelp.com/v3/businesses/search?latitude=${latSearched}&longitude=${lonSearched}`;
-
+  
   superagent.get(url)
+    .set('Authorization', `Bearer ${YELP_API_KEY}`)
     .then((data) => {
-      res.setHeader('Authorization', `Bearer ${YELP_API_KEY}`);
       const results = data.body;
       let localBusinesses = results.businesses.map(obj => new Yelp(obj));
       response.send(localBusinesses);
