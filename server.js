@@ -174,7 +174,7 @@ function Movie(obj) {
 
 function handleMovies(request, response) {
 
-  const citySearched = request.query.city;
+  const citySearched = request.query.search_query;
   const url = `https://api.themoviedb.org/3/search/movie?api_key=${MOVIE_API_KEY}&query=${citySearched}`;
 
   superagent.get(url)
