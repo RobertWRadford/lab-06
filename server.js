@@ -211,8 +211,8 @@ function handleYelp(request, response) {
     .then((data) => {
       const results = data.body;
       let localBusinesses = results.businesses.map(obj => new Yelp(obj));
-      let startShow = 0+itemsShown*(curPage-1);
-      let shownBusinesses = localBusinesses.splice(startShow, 5);
+      let startShow = itemsShown*(curPage-1);
+      let shownBusinesses = localBusinesses.splice(startShow, itemsShown);
       response.send(shownBusinesses);
     })
     .catch(() => {
