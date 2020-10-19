@@ -1,26 +1,14 @@
 'use strict';
 
-// "dotenv" pulls in any environment variables (process.env) that live in a .env file
-// as part of this project
 require('dotenv').config();
 
-// the above dotenv require is the same as this:
-// const dotenv = require('dotenv');
-// dotenv.config();
-
-// requiring "pulling in" off the 3rd party dependencies we want to use
-// ie: express -> for building APIs and related services (backend for web apps)
 const express = require('express');
 const superagent = require('superagent');
 const cors = require('cors');
 const pg = require('pg');
 
-// assign express to "app" -> why? -> because everyone does that
 const app = express();
 
-// assign a PORT (or location) for accepting incoming traffic
-// devs often default their dev port to 3000, 3001, or 3333 for backends
-// and often default 8000 or 8080 for frontends
 const PORT = process.env.PORT;
 const GEOCODE_API_KEY = process.env.GEOCODE_API_KEY;
 const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
@@ -29,21 +17,12 @@ const MOVIE_API_KEY = process.env.MOVIE_API_KEY;
 const YELP_API_KEY = process.env.YELP_API_KEY;
 const client = new pg.Client(process.env.DATABASE_URL);
 
-// just "use" this -> it will allow for a public server
 app.use(cors());
 
+function caughtError(request, response) { response.status(500).send('sorry, something broke.'); }
 
-//catch errors and send here
-function caughtError(request, response) {
-  response.status(500).send('sorry, something broke.');
-}
+app.get('/', (request, response) => { response.send('Home Page'); });
 
-// simple server route to give us our "homepage"
-app.get('/', (request, response) => {
-  response.send('Home Page');
-});
-
-// http://localhost:3000/location?city=seattle
 app.get('/location', handleLocation);
 
 function Location(city, geoData) {
@@ -80,16 +59,10 @@ function handleLocation(request, response) {
               })
             response.send(newLocation);
           })
-          .catch(() => {
-            caughtError(request, response);
-          });
-
+          .catch(() => { caughtError(request, response); });
       }
-      // res.status(200).json(results);
     })
-    .catch( err => {
-      console.error('db error:', err);
-    })
+    .catch( err => { console.error('db error:', err); })
 }
 
 app.get('/weather', handleWeather);
@@ -118,9 +91,7 @@ function handleWeather(request, response) {
       let weatherArr = results.data.map(mapWeather);
       response.send(weatherArr);
     })
-    .catch(() => {
-      caughtError(request, response);
-    });
+    .catch(() => { caughtError(request, response);});
 }
 
 app.get('/trails', handleTrails);
@@ -139,9 +110,7 @@ function Trail(obj) {
   this.summary = obj.summary;
 }
 
-function mapTrails(obj){
-  return new Trail(obj);
-}
+function mapTrails(obj){ return new Trail(obj); }
 
 function handleTrails(request, response) {
   
@@ -183,9 +152,7 @@ function handleMovies(request, response) {
       let localMovies = result.map(obj => new Movie(obj));
       response.send(localMovies);
     })
-    .catch(() => {
-      caughtError(request, response);
-    });
+    .catch(() => { caughtError(request, response); });
 }
 
 app.get('/yelp', handleYelp);
@@ -215,20 +182,15 @@ function handleYelp(request, response) {
       let shownBusinesses = localBusinesses.splice(startShow, 5);
       response.send(shownBusinesses);
     })
-    .catch(() => {
-      caughtError(request, response);
-    });
+    .catch(() => { caughtError(request, response); });
 }
 
 app.get('*', caughtError);
 
-// configure our app to accept and listen for incoming traffic
 client.connect()
   .then(() => {
     app.listen(PORT, () => {
       console.log(`server up: ${PORT}`);
     });
   })
-  .catch( err => {
-    console.error('connection error:', err);
-  })
+  .catch( err => { console.error('connection error:', err); })
